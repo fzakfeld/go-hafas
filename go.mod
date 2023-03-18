@@ -1,3 +1,3 @@
-module fzakfeld/go-hafas
+module github.com/fzakfeld/go-hafas
 
 go 1.17

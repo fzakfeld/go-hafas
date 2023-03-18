@@ -2,8 +2,9 @@ package hafas
 
 import (
 	"encoding/json"
-	"fzakfeld/go-hafas/hafas/hrequests"
-	"fzakfeld/go-hafas/hafas/hresponse"
+
+	"github.com/fzakfeld/go-hafas/hafas/hrequests"
+	"github.com/fzakfeld/go-hafas/hafas/hresponse"
 )
 
 type Journey struct {

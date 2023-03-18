@@ -2,9 +2,10 @@ package hafas
 
 import (
 	"encoding/json"
-	"fzakfeld/go-hafas/hafas/hrequests"
-	"fzakfeld/go-hafas/hafas/hresponse"
 	"time"
+
+	"github.com/fzakfeld/go-hafas/hafas/hrequests"
+	"github.com/fzakfeld/go-hafas/hafas/hresponse"
 )
 
 type Departure struct {

@@ -6,12 +6,13 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fzakfeld/go-hafas/hafas/hrequests"
-	"fzakfeld/go-hafas/hafas/hresponse"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/fzakfeld/go-hafas/hafas/hrequests"
+	"github.com/fzakfeld/go-hafas/hafas/hresponse"
 )
 
 type hafasClient struct {
