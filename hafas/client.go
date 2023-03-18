@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type hafasClient struct {
@@ -100,4 +101,17 @@ func (c *hafasClient) createChecksum(requestData []byte) string {
 	salt, _ := hex.DecodeString(c.salt)
 	hash := md5.Sum([]byte(string(requestData) + string(salt)))
 	return hex.EncodeToString(hash[:])
+}
+
+func (c *hafasClient) parseTime(timestamp string, day string, startDate time.Time) (time.Time, error) {
+	layout := "20060102150405"
+
+	ts, err := time.Parse(layout, day+timestamp)
+
+	if startDate.After(ts) {
+		// this is neccessary for overnight journeys.
+		ts = ts.AddDate(0, 0, 1)
+	}
+
+	return ts, err
 }
