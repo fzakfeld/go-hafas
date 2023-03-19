@@ -1,5 +1,5 @@
 foo.json
-examples/main.go
+examples/env.sh
 
 # Binaries for programs and plugins
 *.exe

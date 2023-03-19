@@ -2,18 +2,24 @@ package main
 
 import (
 	"encoding/json"
+	"os"
+	"time"
 
 	"github.com/fzakfeld/go-hafas/hafas"
 )
 
 func main() {
 	client := hafas.NewHafasClient(&hafas.Config{
-		Url:  "hafas-endpoint/mgate.exe",
-		Salt: "hafas-salt",
-		Aid:  "hafas-auth-aid",
+		Url:  os.Getenv("HAFAS_URL"),
+		Salt: os.Getenv("HAFAS_SALT"),
+		Aid:  os.Getenv("HAFAS_AUTH_AID"),
 	})
 
-	departures, _ := client.GetDepartures()
+	when := time.Now()
+	duration := 20
+	stationId := "8000068"
+
+	departures, _ := client.GetDepartures(when, duration, stationId)
 
 	foo, _ := json.Marshal(&departures)
 	println(string(foo))

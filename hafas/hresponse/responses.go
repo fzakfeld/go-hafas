@@ -15,6 +15,11 @@ type HafasResult struct {
 type Common struct {
 	LocL  []Location `json:"locL"`
 	ProdL []Product  `json:"prodL"`
+	OpL   []Operator `json:"opL"`
+}
+
+type Operator struct {
+	Name string `json:"name"`
 }
 
 type Location struct {
@@ -33,6 +38,8 @@ type Product struct {
 	Name   string `json:"name"`
 	NameS  string `json:"nameS"`
 	Number string `json:"number"`
+	Cls    int    `json:"cls"`
+	OprX   int    `json:"oprX"`
 }
 
 type Journey struct {

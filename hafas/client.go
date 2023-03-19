@@ -2,32 +2,21 @@ package hafas
 
 import (
 	"bytes"
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"net/http"
-	"strings"
-	"time"
 
 	"github.com/fzakfeld/go-hafas/hafas/hrequests"
 	"github.com/fzakfeld/go-hafas/hafas/hresponse"
 )
 
 type hafasClient struct {
-	url      string
-	salt     string
-	aid      string
-	language string
+	url       string
+	salt      string
+	aid       string
+	language  string
+	userAgent string
 }
-
-// type HafasConfig struct {
-// 	url      string
-// 	salt     string
-// 	aid      string
-// 	language string
-// }
 
 type Config struct {
 	Url  string
@@ -37,20 +26,21 @@ type Config struct {
 
 func NewHafasClient(config *Config) *hafasClient {
 	return &hafasClient{
-		url:      config.Url,
-		salt:     config.Salt,
-		aid:      config.Aid,
-		language: "en",
+		url:       config.Url,
+		salt:      config.Salt,
+		aid:       config.Aid,
+		language:  "en",
+		userAgent: "go-hafas",
 	}
 }
 
-func (c *hafasClient) makeRequest(method string, payload interface{}) (hresponse.HafasResult, error) {
-	request := hrequests.RequestBase{
+func (c *hafasClient) makeRequest(method string, request interface{}) (hresponse.HafasResult, error) {
+	payload := hrequests.RequestBase{
 		Lang: c.language,
 		SvcReqL: [1]hrequests.Request{
 			{
 				Meth: method,
-				Req:  payload,
+				Req:  request,
 				Cfg: hrequests.Config{
 					RtMode: "REALTIME",
 				},
@@ -70,49 +60,39 @@ func (c *hafasClient) makeRequest(method string, payload interface{}) (hresponse
 		},
 	}
 
-	requestData, _ := json.Marshal(request)
-
-	url := c.url + "?checksum=" + c.createChecksum(requestData)
-
-	resp, _ := http.Post(url, "application/json", bytes.NewReader(requestData))
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	var response hresponse.HafasResponse
-	var result hresponse.HafasResult
-	err := json.Unmarshal([]byte(body), &response)
+	payloadJson, err := json.Marshal(payload)
 
 	if err != nil {
-		return result, err
+		panic(err)
+	}
+
+	url := c.url + "?checksum=" + c.createChecksum(payloadJson)
+
+	resp, err := http.Post(url, "application/json", bytes.NewReader(payloadJson))
+	if err != nil {
+		panic(err)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	var response hresponse.HafasResponse
+	err = json.Unmarshal([]byte(body), &response)
+	if err != nil {
+		panic(err)
 	}
 
 	if response.Err != "OK" {
-		return result, errors.New(strings.ToLower(response.Err))
+		panic(err)
 	}
 
-	if len(response.SvcResL) < 1 {
-		return result, errors.New("received no payload")
+	if len(response.SvcResL) != 1 {
+		panic(err)
 	}
 
-	result = response.SvcResL[0]
+	result := response.SvcResL[0]
 
 	return result, nil
-}
-
-func (c *hafasClient) createChecksum(requestData []byte) string {
-	salt, _ := hex.DecodeString(c.salt)
-	hash := md5.Sum([]byte(string(requestData) + string(salt)))
-	return hex.EncodeToString(hash[:])
-}
-
-func (c *hafasClient) parseTime(timestamp string, day string, startDate time.Time) (time.Time, error) {
-	layout := "20060102150405"
-
-	ts, err := time.Parse(layout, day+timestamp)
-
-	if startDate.After(ts) {
-		// this is neccessary for overnight journeys.
-		ts = ts.AddDate(0, 0, 1)
-	}
-
-	return ts, err
 }
