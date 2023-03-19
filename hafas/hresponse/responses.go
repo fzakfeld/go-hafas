@@ -59,8 +59,12 @@ type Stop struct {
 	DProdX    int    `json:"dProdX"`
 	DTimeS    string `json:"dTimeS"`
 	DTimeR    string `json:"dTimeR"`
+	ATimeS    string `json:"aTimeS"`
+	ATimeR    string `json:"aTimeR"`
 	DProgType string `json:"dProgType"`
+	AProgType string `json:"aProgType"`
 	DTZOffset int    `json:"dTZOffset"`
+	ATZOffset int    `json:"aTZOffset"`
 }
 
 type Position struct {

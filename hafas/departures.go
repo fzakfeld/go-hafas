@@ -29,7 +29,7 @@ type Operator struct {
 	Name string
 }
 
-type Station struct {
+type Station struct { // @todo rename to location?
 	ID        string
 	Name      string
 	Latitude  float32
