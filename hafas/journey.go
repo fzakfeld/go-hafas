@@ -9,17 +9,17 @@ import (
 )
 
 type Journey struct {
-	JourneyId string
-	Product   Product
-	Stops     []Stop
+	ID      string  `json:"id"`
+	Product Product `json:"product"`
+	Stops   []Stop  `json:"stops"`
 }
 
 type Stop struct {
-	Station            Station
-	DepartureScheduled time.Time
-	DepartureReal      time.Time
-	ArrivalScheduled   time.Time
-	ArrivalReal        time.Time
+	Station            Station   `json:"station"`
+	DepartureScheduled time.Time `json:"departure_scheduled"`
+	DepartureReal      time.Time `json:"departure_real"`
+	ArrivalScheduled   time.Time `json:"arrival_scheduled"`
+	ArrivalReal        time.Time `json:"arrival_real"`
 }
 
 func (c *hafasClient) GetJourney(journeyId string) (Journey, error) {
@@ -46,7 +46,7 @@ func (c *hafasClient) GetJourney(journeyId string) (Journey, error) {
 	product := result.Common.ProdL[result.Journey.ProdX]
 
 	journey = Journey{
-		JourneyId: result.Journey.Jid,
+		ID: result.Journey.Jid,
 		Product: Product{
 			Name:   product.Name,
 			NameS:  product.NameS,
@@ -55,13 +55,13 @@ func (c *hafasClient) GetJourney(journeyId string) (Journey, error) {
 		},
 	}
 
-	for _, x := range result.Journey.StopL {
-		location := result.Common.LocL[x.LocX]
+	for _, stop := range result.Journey.StopL {
+		location := result.Common.LocL[stop.LocX]
 
-		departureScheduled := c.parseTime(x.DTimeS, result.Journey.TrainStartDate, time.Time{})
-		departureReal := c.parseTime(x.DTimeR, result.Journey.TrainStartDate, time.Time{})
-		arrivalScheduled := c.parseTime(x.ATimeS, result.Journey.TrainStartDate, time.Time{})
-		arrivalReal := c.parseTime(x.ATimeR, result.Journey.TrainStartDate, time.Time{})
+		departureScheduled := c.parseTime(stop.DTimeS, result.Journey.TrainStartDate, time.Time{})
+		departureReal := c.parseTime(stop.DTimeR, result.Journey.TrainStartDate, time.Time{})
+		arrivalScheduled := c.parseTime(stop.ATimeS, result.Journey.TrainStartDate, time.Time{})
+		arrivalReal := c.parseTime(stop.ATimeR, result.Journey.TrainStartDate, time.Time{})
 
 		journey.Stops = append(journey.Stops, Stop{
 			Station: Station{
