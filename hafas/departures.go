@@ -9,32 +9,32 @@ import (
 )
 
 type Departure struct {
-	JourneyId          string
-	Direction          string
-	Product            Product
-	Station            Station
-	DepartureScheduled time.Time
-	DepartureReal      time.Time
+	ID                 string    `json:"id"`
+	Direction          string    `json:"direction"`
+	Product            Product   `json:"product"`
+	Station            Station   `json:"station"`
+	DepartureScheduled time.Time `json:"departure_scheduled"`
+	DepartureReal      time.Time `json:"departure_real"`
 }
 
 type Product struct {
-	Name     string
-	NameS    string
-	Number   string
-	Operator Operator
-	Class    int
+	Name     string   `json:"name"`
+	NameS    string   `json:"-"`
+	Number   string   `json:"number"`
+	Operator Operator `json:"operator"`
+	Class    int      `json:"-"`
 }
 
 type Operator struct {
-	Name string
+	Name string `json:"name"`
 }
 
 type Station struct { // @todo rename to location?
-	ID        string
-	Name      string
-	Latitude  float32
-	Longitude float32
-	Floor     int
+	ID        string  `json:"id"`
+	Name      string  `json:"name"`
+	Latitude  float32 `json:"latitude"`
+	Longitude float32 `json:"longitude"`
+	Floor     int     `json:"floor"`
 }
 
 func (c *hafasClient) GetDepartures(when time.Time, duration int, stationId string) ([]Departure, error) {
@@ -74,21 +74,21 @@ func (c *hafasClient) GetDepartures(when time.Time, duration int, stationId stri
 		return departures, err
 	}
 
-	for _, x := range result.JnyL {
-		product := result.Common.ProdL[x.ProdX]
-		station := result.Common.LocL[x.StbStop.LocX]
+	for _, journey := range result.JnyL {
+		product := result.Common.ProdL[journey.ProdX]
+		station := result.Common.LocL[journey.StbStop.LocX]
 		operator := hresponse.Operator{}
 		// if true { // @todo default value for OpX that is not 0
 		// 	operator = result.Common.OpL[product.OprX]
 		// }
 
-		departureScheduled := c.parseTime(x.StbStop.DTimeS, x.TrainStartDate, time.Time{})
-		departureReal := c.parseTime(x.StbStop.DTimeS, x.TrainStartDate, time.Time{})
+		departureScheduled := c.parseTime(journey.StbStop.DTimeS, journey.TrainStartDate, time.Time{})
+		departureReal := c.parseTime(journey.StbStop.DTimeS, journey.TrainStartDate, time.Time{})
 		latitude := float32(station.Crd.X) / 1000000
 		longitude := float32(station.Crd.Y) / 1000000
 
 		departures = append(departures, Departure{
-			JourneyId: x.Jid,
+			ID: journey.Jid,
 			Product: Product{
 				Name:   product.Name,
 				NameS:  product.NameS,
@@ -98,7 +98,7 @@ func (c *hafasClient) GetDepartures(when time.Time, duration int, stationId stri
 				},
 				Class: 0,
 			},
-			Direction: x.DirTxt,
+			Direction: journey.DirTxt,
 			Station: Station{
 				ID:        station.ExtId,
 				Name:      station.Name,
