@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 )
 
-func (c *hafasClient) createChecksum(requestData []byte) string {
+func (c *HafasClient) createChecksum(requestData []byte) string {
 	salt, err := hex.DecodeString(c.salt)
 	if err != nil {
 		panic(err)
