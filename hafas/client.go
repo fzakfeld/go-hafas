@@ -10,7 +10,7 @@ import (
 	"github.com/fzakfeld/go-hafas/hafas/hresponse"
 )
 
-type hafasClient struct {
+type HafasClient struct {
 	url       string
 	salt      string
 	aid       string
@@ -24,8 +24,8 @@ type Config struct {
 	Aid  string
 }
 
-func NewHafasClient(config *Config) *hafasClient {
-	return &hafasClient{
+func NewHafasClient(config *Config) *HafasClient {
+	return &HafasClient{
 		url:       config.Url,
 		salt:      config.Salt,
 		aid:       config.Aid,
@@ -34,7 +34,7 @@ func NewHafasClient(config *Config) *hafasClient {
 	}
 }
 
-func (c *hafasClient) makeRequest(method string, request interface{}) (hresponse.HafasResult, error) {
+func (c *HafasClient) makeRequest(method string, request interface{}) (hresponse.HafasResult, error) {
 	payload := hrequests.RequestBase{
 		Lang: c.language,
 		SvcReqL: [1]hrequests.Request{

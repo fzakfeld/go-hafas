@@ -2,7 +2,7 @@ package hafas
 
 import "time"
 
-func (c *hafasClient) parseTime(timestamp string, day string, startDate time.Time) time.Time {
+func (c *HafasClient) parseTime(timestamp string, day string, startDate time.Time) time.Time {
 	layout := "20060102150405"
 
 	var ts time.Time

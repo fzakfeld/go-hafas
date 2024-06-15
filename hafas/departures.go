@@ -37,7 +37,7 @@ type Station struct { // @todo rename to location?
 	Floor     int     `json:"floor"`
 }
 
-func (c *hafasClient) GetDepartures(when time.Time, duration int, stationId string) ([]Departure, error) {
+func (c *HafasClient) GetDepartures(when time.Time, duration int, stationId string) ([]Departure, error) {
 	departures := []Departure{}
 
 	departuresDate := when.Format("20060102")

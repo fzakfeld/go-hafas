@@ -22,7 +22,7 @@ type Stop struct {
 	ArrivalReal        time.Time `json:"arrival_real"`
 }
 
-func (c *hafasClient) GetJourney(journeyId string) (Journey, error) {
+func (c *HafasClient) GetJourney(journeyId string) (Journey, error) {
 	journey := Journey{}
 
 	request := hrequests.JourneyDetailsRequest{
