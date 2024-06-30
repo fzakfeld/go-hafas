@@ -40,6 +40,10 @@ type Station struct { // @todo rename to location?
 func (c *HafasClient) GetDepartures(when time.Time, duration int, stationId string) ([]Departure, error) {
 	departures := []Departure{}
 
+	if c.base64urlMode {
+		stationId, _ = c.decodeBase64URL(stationId)
+	}
+
 	departuresDate := when.Format("20060102")
 	departuresTime := when.Format("150405")
 
@@ -87,8 +91,14 @@ func (c *HafasClient) GetDepartures(when time.Time, duration int, stationId stri
 		latitude := float32(station.Crd.X) / 1000000
 		longitude := float32(station.Crd.Y) / 1000000
 
+		journeyId := journey.Jid
+		if c.base64urlMode {
+			journeyId = c.encodeBase64URL(journeyId)
+			station.ExtId = c.encodeBase64URL(station.ExtId)
+		}
+
 		departures = append(departures, Departure{
-			ID: journey.Jid,
+			ID: journeyId,
 			Product: Product{
 				Name:   product.Name,
 				NameS:  product.NameS,
@@ -100,7 +110,7 @@ func (c *HafasClient) GetDepartures(when time.Time, duration int, stationId stri
 			},
 			Direction: journey.DirTxt,
 			Station: Station{
-				ID:        station.ExtId,
+				ID:        station.ExtId, // stationId
 				Name:      station.Name,
 				Latitude:  latitude,
 				Longitude: longitude,

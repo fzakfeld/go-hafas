@@ -23,7 +23,11 @@ type Stop struct {
 }
 
 func (c *HafasClient) GetJourney(journeyId string) (Journey, error) {
-	journey := Journey{}
+	journey := Journey{ID: journeyId}
+
+	if c.base64urlMode {
+		journeyId, _ = c.decodeBase64URL(journeyId)
+	}
 
 	request := hrequests.JourneyDetailsRequest{
 		Jid:         journeyId,
@@ -45,14 +49,11 @@ func (c *HafasClient) GetJourney(journeyId string) (Journey, error) {
 
 	product := result.Common.ProdL[result.Journey.ProdX]
 
-	journey = Journey{
-		ID: result.Journey.Jid,
-		Product: Product{
-			Name:   product.Name,
-			NameS:  product.NameS,
-			Number: product.Number,
-			Class:  product.Cls,
-		},
+	journey.Product = Product{
+		Name:   product.Name,
+		NameS:  product.NameS,
+		Number: product.Number,
+		Class:  product.Cls,
 	}
 
 	for _, stop := range result.Journey.StopL {
@@ -63,9 +64,14 @@ func (c *HafasClient) GetJourney(journeyId string) (Journey, error) {
 		arrivalScheduled := c.parseTime(stop.ATimeS, result.Journey.TrainStartDate, time.Time{})
 		arrivalReal := c.parseTime(stop.ATimeR, result.Journey.TrainStartDate, time.Time{})
 
+		stationId := location.ExtId
+		if c.base64urlMode {
+			stationId = c.encodeBase64URL(stationId)
+		}
+
 		journey.Stops = append(journey.Stops, Stop{
 			Station: Station{
-				ID:        location.ExtId,
+				ID:        stationId,
 				Name:      location.Name,
 				Latitude:  float32(location.Crd.Y) / 1000000,
 				Longitude: float32(location.Crd.X) / 1000000,

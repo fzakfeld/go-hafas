@@ -2,8 +2,10 @@ package hafas
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
+	"errors"
+	"io"
 	"net/http"
 
 	"github.com/fzakfeld/go-hafas/hafas/hrequests"
@@ -11,27 +13,39 @@ import (
 )
 
 type HafasClient struct {
-	url       string
-	salt      string
-	aid       string
-	language  string
-	userAgent string
+	url           string
+	salt          string
+	aid           string
+	language      string
+	userAgent     string
+	base64urlMode bool
 }
 
 type Config struct {
-	Url  string
-	Salt string
-	Aid  string
+	Url           string
+	Salt          string
+	Aid           string
+	Base64urlMode bool
 }
 
 func NewHafasClient(config *Config) *HafasClient {
 	return &HafasClient{
-		url:       config.Url,
-		salt:      config.Salt,
-		aid:       config.Aid,
-		language:  "en",
-		userAgent: "go-hafas",
+		url:           config.Url,
+		salt:          config.Salt,
+		aid:           config.Aid,
+		language:      "en",
+		userAgent:     "go-hafas",
+		base64urlMode: config.Base64urlMode,
 	}
+}
+
+func (c *HafasClient) encodeBase64URL(data string) string {
+	return base64.RawURLEncoding.EncodeToString([]byte(data))
+}
+
+func (c *HafasClient) decodeBase64URL(input string) (string, error) {
+	data, err := base64.RawURLEncoding.DecodeString(input)
+	return string(data), err
 }
 
 func (c *HafasClient) makeRequest(method string, request interface{}) (hresponse.HafasResult, error) {
@@ -73,7 +87,7 @@ func (c *HafasClient) makeRequest(method string, request interface{}) (hresponse
 		panic(err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
@@ -85,11 +99,11 @@ func (c *HafasClient) makeRequest(method string, request interface{}) (hresponse
 	}
 
 	if response.Err != "OK" {
-		panic(err)
+		panic(response.Err)
 	}
 
 	if len(response.SvcResL) != 1 {
-		panic(err)
+		panic(errors.New(""))
 	}
 
 	result := response.SvcResL[0]
