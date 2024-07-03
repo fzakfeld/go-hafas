@@ -59,10 +59,10 @@ func (c *HafasClient) GetJourney(journeyId string) (Journey, error) {
 	for _, stop := range result.Journey.StopL {
 		location := result.Common.LocL[stop.LocX]
 
-		departureScheduled := c.parseTime(stop.DTimeS, result.Journey.TrainStartDate, time.Time{})
-		departureReal := c.parseTime(stop.DTimeR, result.Journey.TrainStartDate, time.Time{})
-		arrivalScheduled := c.parseTime(stop.ATimeS, result.Journey.TrainStartDate, time.Time{})
-		arrivalReal := c.parseTime(stop.ATimeR, result.Journey.TrainStartDate, time.Time{})
+		departureScheduled := c.parseTime(stop.DTimeS, result.Journey.TrainStartDate)
+		departureReal := c.parseTime(stop.DTimeR, result.Journey.TrainStartDate)
+		arrivalScheduled := c.parseTime(stop.ATimeS, result.Journey.TrainStartDate)
+		arrivalReal := c.parseTime(stop.ATimeR, result.Journey.TrainStartDate)
 
 		stationId := location.ExtId
 		if c.base64urlMode {

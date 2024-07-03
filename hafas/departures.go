@@ -86,8 +86,8 @@ func (c *HafasClient) GetDepartures(when time.Time, duration int, stationId stri
 		// 	operator = result.Common.OpL[product.OprX]
 		// }
 
-		departureScheduled := c.parseTime(journey.StbStop.DTimeS, journey.TrainStartDate, time.Time{})
-		departureReal := c.parseTime(journey.StbStop.DTimeS, journey.TrainStartDate, time.Time{})
+		departureScheduled := c.parseTime(journey.StbStop.DTimeS, journey.TrainStartDate)
+		departureReal := c.parseTime(journey.StbStop.DTimeS, journey.TrainStartDate)
 		latitude := float32(station.Crd.X) / 1000000
 		longitude := float32(station.Crd.Y) / 1000000
 
