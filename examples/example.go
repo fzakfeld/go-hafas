@@ -19,12 +19,12 @@ func main() {
 	// duration := 20
 	// stationId := "ODAwMDA2OA"
 
-	// departures, _ := client.GetDepartures(when, duration, stationId)
+	// departures, _ := client.GetArrivals(when, duration, stationId)
 
 	// foo, _ := json.Marshal(&departures)
 	// println(string(foo))
 
-	journey, _ := client.GetJourney("MnwjVk4jMSNTVCMxNzE5NDI4MzQxI1BJIzAjWkkjOTcwMDEzI1RBIzEjREEjMzAwNjI0IzFTIzExNjE0OSMxVCMyMzMzI0xTIzEyNDUzNyNMVCMxMDAwMyNQVSM4MCNSVCMxI0NBI1NUUiNaRSM5I1pCI1NUUiAgICA5I1BDIzgjRlIjMTE2MTQ5I0ZUIzIzMzMjVE8jMTI0NTM3I1RUIzEwMDAzIw")
+	journey, _ := client.GetJourney("MnwjVk4jMSNTVCMxNzE5ODYyOTkyI1BJIzAjWkkjMzA4NzMyI1RBIzAjREEjMzA3MjQjMVMjODAwMjU1MyMxVCMyMTM0I0xTIzgwMDAyNjEjTFQjMTA1NDAjUFUjODAjUlQjMSNDQSNJQ0UjWkUjMTUwNyNaQiNJQ0UgMTUwNyNQQyMwI0ZSIzgwMDI1NTMjRlQjMjEzNCNUTyM4MDAwMjYxI1RUIzEwNTQwIw")
 
 	foo, _ := json.Marshal(&journey)
 	println(string(foo))
