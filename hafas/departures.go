@@ -9,12 +9,12 @@ import (
 )
 
 type Departure struct {
-	ID                 string    `json:"id"`
-	Direction          string    `json:"direction"`
-	Product            Product   `json:"product"`
-	Station            Station   `json:"station"`
-	DepartureScheduled time.Time `json:"departure_scheduled"`
-	DepartureReal      time.Time `json:"departure_real"`
+	ID                 string       `json:"id"`
+	Direction          string       `json:"direction"`
+	Product            Product      `json:"product"`
+	Station            Station      `json:"station"`
+	DepartureScheduled NullableTime `json:"departure_scheduled"`
+	DepartureReal      NullableTime `json:"departure_real"`
 }
 
 type Product struct {
