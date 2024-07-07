@@ -2,7 +2,6 @@ package hafas
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/fzakfeld/go-hafas/hafas/hrequests"
 	"github.com/fzakfeld/go-hafas/hafas/hresponse"
@@ -15,11 +14,11 @@ type Journey struct {
 }
 
 type Stop struct {
-	Station            Station   `json:"station"`
-	DepartureScheduled time.Time `json:"departure_scheduled"`
-	DepartureReal      time.Time `json:"departure_real"`
-	ArrivalScheduled   time.Time `json:"arrival_scheduled"`
-	ArrivalReal        time.Time `json:"arrival_real"`
+	Station            Station      `json:"station"`
+	DepartureScheduled NullableTime `json:"departure_scheduled"`
+	DepartureReal      NullableTime `json:"departure_real"`
+	ArrivalScheduled   NullableTime `json:"arrival_scheduled"`
+	ArrivalReal        NullableTime `json:"arrival_real"`
 }
 
 func (c *HafasClient) GetJourney(journeyId string) (Journey, error) {

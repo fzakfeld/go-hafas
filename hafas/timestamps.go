@@ -2,13 +2,13 @@ package hafas
 
 import "time"
 
-func (c *HafasClient) parseTime(timestamp string, day string) time.Time {
+func (c *HafasClient) parseTime(timestamp string, day string) NullableTime {
 	layout := "20060102150405"
 
 	var ts time.Time
 
 	if timestamp == "" {
-		return ts
+		return NullableTime{ts}
 	}
 
 	dayOffset := 0
@@ -22,5 +22,5 @@ func (c *HafasClient) parseTime(timestamp string, day string) time.Time {
 
 	ts = ts.AddDate(0, 0, dayOffset)
 
-	return ts
+	return NullableTime{ts}
 }
