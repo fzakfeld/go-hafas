@@ -18,7 +18,9 @@ func (c *HafasClient) parseTime(timestamp string, day string) time.Time {
 		timestamp = timestamp[2:]
 	}
 
-	ts, _ = time.Parse(layout, day+timestamp)
+	loc, _ := time.LoadLocation("Europe/Berlin")
+
+	ts, _ = time.ParseInLocation(layout, day+timestamp, loc)
 
 	ts = ts.AddDate(0, 0, dayOffset)
 
